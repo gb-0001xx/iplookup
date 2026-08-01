@@ -1,265 +1,135 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Net-Node // Public IP Extractor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-base: #05050a;
-            --bg-dark: #0c0c16;
-            --bg-card: #121222;
-            --text-normal: #c7d5f0;
-            --text-muted: #5a638a;
-            --primary: #00f0ff;
-            --accent: #ff0055;
-            --warning: #ffe600;
-            --danger: #ff003c;
-            --success: #00ff66;
-            --glow-primary: 0 0 12px rgba(0, 240, 255, 0.4);
-            --glow-accent: 0 0 12px rgba(255, 0, 85, 0.4);
-        }
-
-        body {
-            font-family: 'Share Tech Mono', monospace;
-            background-color: var(--bg-base);
-            background-image: 
-                linear-gradient(rgba(18, 18, 34, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(18, 18, 34, 0.3) 1px, transparent 1px);
-            background-size: 20px 20px;
-            color: var(--text-normal);
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .painel {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--primary);
-            padding: 30px;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 520px;
-            box-shadow: var(--glow-primary), inset 0 0 20px rgba(0, 240, 255, 0.05);
-            position: relative;
-        }
-
-        h2 {
-            font-family: 'Orbitron', sans-serif;
-            margin-top: 0;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 12px;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 0 8px var(--primary);
-            font-size: 22px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-extrair {
-            width: 100%;
-            padding: 16px;
-            background-color: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            border-radius: 2px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            box-shadow: var(--glow-primary);
-        }
-
-        .btn-extrair:hover { 
-            background-color: var(--primary); 
-            color: var(--bg-base);
-            box-shadow: 0 0 25px var(--primary);
-        }
-        
-        .btn-extrair:disabled { 
-            background-color: #151522; 
-            border-color: #2a2a40;
-            color: var(--text-muted); 
-            cursor: not-allowed; 
-            box-shadow: none;
-        }
-
-        .dados-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            display: none;
-        }
-
-        .dado-item {
-            background-color: var(--bg-card);
-            padding: 15px;
-            border-radius: 2px;
-            border-left: 4px solid var(--accent);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            transition: transform 0.2s;
-        }
-
-        .dado-item:hover {
-            transform: translateX(4px);
-            border-left-color: var(--primary);
-        }
-
-        .dado-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .dado-valor {
-            font-size: 18px;
-            font-family: 'Share Tech Mono', monospace;
-            color: #ffffff;
-            word-break: break-all;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-        }
-
-        .alerta {
-            background-color: rgba(255, 0, 60, 0.1);
-            color: var(--danger);
-            padding: 15px;
-            border-radius: 2px;
-            margin-top: 20px;
-            display: none;
-            font-size: 13px;
-            border: 1px solid var(--danger);
-            box-shadow: var(--glow-accent);
-        }
-
-        #mapaLink {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 13px;
-            display: inline-block;
-            margin-top: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: 0.2s;
-        }
-        
-        #mapaLink:hover { 
-            color: #fff;
-            text-shadow: 0 0 8px var(--primary);
-            text-decoration: underline; 
-        }
-
-        
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
-            z-index: 999;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Lookup</title>
+<style>
+  body {
+    font-family: monospace;
+    background: #111;
+    color: #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 20px;
+  }
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+  }
+  h2 {
+    margin: 0 0 15px;
+    font-size: 16px;
+    color: #0ff;
+  }
+  input, button {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+  }
+  input {
+    background: #111;
+    color: #ddd;
+    margin-bottom: 10px;
+  }
+  button {
+    background: #0ff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .result { margin-top: 15px; font-size: 14px; line-height: 1.8; display: none; }
+  .result div span { color: #888; }
+  .error { color: #f55; font-size: 13px; margin-top: 10px; display: none; }
+  a { color: #0ff; }
+</style>
 </head>
 <body>
 
-    <div class="painel">
-        <h2>IP</h2>
-        <button id="btnBuscar" class="btn-extrair" onclick="extrairIP()">Extract My IP and Data</button>
+<div class="card">
+  <h2>MY IP</h2>
+  <button onclick="lookup()">Check my IP</button>
+  <div class="error" id="err1"></div>
+  <div class="result" id="res1"></div>
+</div>
 
-        <div id="alertaErro" class="alerta"></div>
+<div class="card">
+  <h2>LOOKUP IP / DOMAIN</h2>
+  <input id="target" placeholder="e.g. 8.8.8.8 or example.com">
+  <button onclick="lookup(true)">Look up</button>
+  <div class="error" id="err2"></div>
+  <div class="result" id="res2"></div>
+</div>
 
-        <div id="containerDados" class="dados-grid">
-            <div class="dado-item">
-                <div class="dado-label">// IP Public (IPv4 / IPv6)</div>
-                <div class="dado-valor" id="valIp">--</div>
-            </div>
+<script>
+async function resolveHost(host) {
+  const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(host)}&type=A`);
+  const d = await r.json();
+  const a = d.Answer && d.Answer.find(x => x.type === 1);
+  if (!a) throw new Error('Could not resolve this domain.');
+  return a.data;
+}
 
-            <div class="dado-item">
-                <div class="dado-label">// Internet Provider (ISP)</div>
-                <div class="dado-valor" id="valOrg">--</div>
-            </div>
+function isIP(v) {
+  return /^(\d{1,3}\.){3}\d{1,3}$/.test(v) || /^[0-9a-fA-F:]+:[0-9a-fA-F:]+$/.test(v);
+}
 
-            <div class="dado-item">
-                <div class="dado-label">// Approximate Location</div>
-                <div class="dado-valor" id="valLoc">--</div>
-            </div>
+function render(id, d) {
+  const isp = d.connection?.isp || d.connection?.org || '?';
+  const loc = (d.latitude && d.longitude) ? `${d.latitude},${d.longitude}` : null;
+  document.getElementById(id).innerHTML = `
+    <div><span>IP:</span> ${d.ip}</div>
+    <div><span>ISP:</span> ${isp}</div>
+    <div><span>Location:</span> ${d.city || '?'}, ${d.region || '?'} - ${d.country || '?'}</div>
+    <div><span>Coords:</span> ${loc || '?'}
+      ${loc ? `<a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank">[map]</a>` : ''}
+    </div>`;
+  document.getElementById(id).style.display = 'block';
+}
 
-            <div class="dado-item">
-                <div class="dado-label">// Geographic Coordinates (Lat, Long)</div>
-                <div class="dado-valor" id="valCoord">--</div>
-                <a id="mapaLink" href="#" target="_blank">[ ACESSAR_GEO_GRID ] →</a>
-            </div>
-        </div>
-    </div>
+async function lookup(withTarget = false) {
+  const suffix = withTarget ? '2' : '1';
+  const btn = event.target;
+  const err = document.getElementById('err' + suffix);
+  const res = document.getElementById('res' + suffix);
 
-    <script>
-        async function extrairIP() {
-            const btn = document.getElementById('btnBuscar');
-            const container = document.getElementById('containerDados');
-            const alertaErro = document.getElementById('alertaErro');
+  err.style.display = 'none';
+  res.style.display = 'none';
+  btn.disabled = true;
 
-            
-            btn.innerText = "Analyzing network traffic...";
-            btn.disabled = true;
-            alertaErro.style.display = 'none';
-            container.style.display = 'none';
+  try {
+    let url = 'https://ipwho.is/';
+    if (withTarget) {
+      const v = document.getElementById('target').value.trim();
+      if (!v) throw new Error('Enter an IP or domain.');
+      const ip = isIP(v) ? v : await resolveHost(v);
+      url += ip;
+    }
 
-            try {
-                
-                const resposta = await fetch('https://ipinfo.io/json');
+    const r = await fetch(url);
+    const d = await r.json();
+    if (d.success === false) throw new Error(d.message || 'Lookup failed.');
 
-                if (!resposta.ok) {
-                    throw new Error(`Communication failure with the tracking server. Code: ${resposta.status}`);
-                }
-
-                const dados = await resposta.json();
-
-                
-                document.getElementById('valIp').innerText = dados.ip || 'Desconhecido';
-                document.getElementById('valOrg').innerText = dados.org || 'Desconhecido';
-                document.getElementById('valLoc').innerText = `${dados.city || '?'}, ${dados.region || '?'} - ${dados.country || '?'}`;
-                document.getElementById('valCoord').innerText = dados.loc || 'Não disponível';
-
-                
-                const mapaLink = document.getElementById('mapaLink');
-                if (dados.loc) {
-                    mapaLink.href = `https://www.google.com/maps/search/?api=1&query=${dados.loc}`;
-                    mapaLink.style.display = 'inline-block';
-                } else {
-                    mapaLink.style.display = 'none';
-                }
-
-                
-                container.style.display = 'grid';
-
-            } catch (erro) {
-                alertaErro.innerText = `[[ONNECTION ERROR]: ${erro.message}. Check if you are using an AdBlocker or extreme privacy extension that is blocking the extraction..`;
-                alertaErro.style.display = 'block';
-            } finally {
-                btn.innerText = "Extract Again";
-                btn.disabled = false;
-            }
-        }
-    </script>
+    render('res' + suffix, d);
+  } catch (e) {
+    err.innerText = e.message;
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
 </body>
 </html>
