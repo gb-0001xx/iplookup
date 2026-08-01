@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Net-Node // Extrator de IP Público</title>
+    <title>Net-Node // Public IP Extractor</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -184,28 +184,28 @@
 
     <div class="painel">
         <h2>IP</h2>
-        <button id="btnBuscar" class="btn-extrair" onclick="extrairIP()">Extrair Meu IP e Dados</button>
+        <button id="btnBuscar" class="btn-extrair" onclick="extrairIP()">Extract My IP and Data</button>
 
         <div id="alertaErro" class="alerta"></div>
 
         <div id="containerDados" class="dados-grid">
             <div class="dado-item">
-                <div class="dado-label">// IP Público (IPv4 / IPv6)</div>
+                <div class="dado-label">// IP Public (IPv4 / IPv6)</div>
                 <div class="dado-valor" id="valIp">--</div>
             </div>
 
             <div class="dado-item">
-                <div class="dado-label">// Provedor de Internet (ISP)</div>
+                <div class="dado-label">// Internet Provider (ISP)</div>
                 <div class="dado-valor" id="valOrg">--</div>
             </div>
 
             <div class="dado-item">
-                <div class="dado-label">// Localização Aproximada</div>
+                <div class="dado-label">// Approximate Location</div>
                 <div class="dado-valor" id="valLoc">--</div>
             </div>
 
             <div class="dado-item">
-                <div class="dado-label">// Coordenadas Geográficas (Lat, Long)</div>
+                <div class="dado-label">// Geographic Coordinates (Lat, Long)</div>
                 <div class="dado-valor" id="valCoord">--</div>
                 <a id="mapaLink" href="#" target="_blank">[ ACESSAR_GEO_GRID ] →</a>
             </div>
@@ -219,7 +219,7 @@
             const alertaErro = document.getElementById('alertaErro');
 
             
-            btn.innerText = "Analisando tráfego de rede...";
+            btn.innerText = "Analyzing network traffic...";
             btn.disabled = true;
             alertaErro.style.display = 'none';
             container.style.display = 'none';
@@ -229,7 +229,7 @@
                 const resposta = await fetch('https://ipinfo.io/json');
 
                 if (!resposta.ok) {
-                    throw new Error(`Falha na comunicação com o servidor de rastreio. Código: ${resposta.status}`);
+                    throw new Error(`Communication failure with the tracking server. Code: ${resposta.status}`);
                 }
 
                 const dados = await resposta.json();
@@ -253,10 +253,10 @@
                 container.style.display = 'grid';
 
             } catch (erro) {
-                alertaErro.innerText = `[ERRO DE CONEXÃO]: ${erro.message}. Verifique se você está usando um AdBlocker ou extensão de privacidade extrema que esteja bloqueando a extração.`;
+                alertaErro.innerText = `[[ONNECTION ERROR]: ${erro.message}. Check if you are using an AdBlocker or extreme privacy extension that is blocking the extraction..`;
                 alertaErro.style.display = 'block';
             } finally {
-                btn.innerText = "Extrair Novamente";
+                btn.innerText = "Extract Again";
                 btn.disabled = false;
             }
         }
