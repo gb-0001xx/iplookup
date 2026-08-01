@@ -1,4 +1,4 @@
-<img width="719" height="312" alt="IP" src="https://github.com/user-attachments/assets/4afa9e9d-187b-4dcc-8240-5579ea96dfc1" />
+<img width="652" height="250" alt="image" src="https://github.com/user-attachments/assets/6a836dac-0871-4a96-93c7-526b7267a7b8" />
 
 # 📌 **[IP Lookup]** 🌐
 
