@@ -5,29 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Lookup</title>
 <style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+  }
+
   body {
     font-family: monospace;
-    background: #111;
+    background:
+      radial-gradient(ellipse 900px 520px at 50% -12%, rgba(0,255,255,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(0,140,255,0.06), transparent 60%),
+      #0b0d0e;
     color: #ddd;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
   }
+
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
   .card {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 6px;
+    background: rgba(22, 24, 25, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #263238;
+    border-radius: 8px;
     padding: 20px;
     width: 100%;
     max-width: 420px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(0,255,255,0.04),
+      0 0 24px rgba(0,255,255,0.06),
+      0 10px 30px rgba(0,0,0,0.55);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+    animation: cardIn 0.7s cubic-bezier(.16,1,.3,1) forwards;
   }
+  .card + .card { animation-delay: 0.16s; }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,255,255,0.35);
+    box-shadow:
+      0 0 0 1px rgba(0,255,255,0.12),
+      0 0 42px rgba(0,255,255,0.16),
+      0 16px 40px rgba(0,0,0,0.65);
+  }
+
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
   h2 {
     margin: 0 0 15px;
     font-size: 16px;
     color: #0ff;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 6px rgba(0,255,255,0.85), 0 0 18px rgba(0,255,255,0.35);
   }
+
   input, button {
     width: 100%;
     box-sizing: border-box;
@@ -37,43 +89,269 @@
     border-radius: 4px;
     border: 1px solid #333;
   }
+
   input {
-    background: #111;
+    background: #101314;
     color: #ddd;
     margin-bottom: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
+  input:focus {
+    outline: none;
+    border-color: #0ff;
+    box-shadow: 0 0 0 1px rgba(0,255,255,0.25), 0 0 14px rgba(0,255,255,0.35);
+  }
+  input::placeholder { color: #555; }
+
   button {
     background: #0ff;
     color: #000;
     border: none;
     cursor: pointer;
     font-weight: bold;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(0,255,255,0.45), 0 0 0 1px rgba(0,255,255,0.5) inset;
+    transition: box-shadow 0.25s ease, transform 0.15s ease, background 0.25s ease, opacity 0.25s ease;
   }
-  button:disabled { opacity: 0.5; cursor: default; }
-  .result { margin-top: 15px; font-size: 14px; line-height: 1.8; display: none; }
-  .result div span { color: #888; }
-  .error { color: #f55; font-size: 13px; margin-top: 10px; display: none; }
-  a { color: #0ff; }
+  button:hover:not(:disabled) {
+    box-shadow: 0 0 20px rgba(0,255,255,0.9), 0 0 36px rgba(0,255,255,0.4);
+    transform: translateY(-1px);
+  }
+  button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+  button:focus-visible {
+    outline: 2px solid rgba(0,255,255,0.7);
+    outline-offset: 2px;
+  }
+  button:disabled {
+    opacity: 0.65;
+    cursor: default;
+    animation: pulseGlow 1.3s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(0,255,255,0.3); }
+    50%      { box-shadow: 0 0 22px rgba(0,255,255,0.75); }
+  }
+
+  .result {
+    margin-top: 15px;
+    font-size: 14px;
+    line-height: 1.8;
+    display: none;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .result.show {
+    display: block;
+    animation: resultIn 0.5s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes resultIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result .row span.label { color: #888; }
+  .result .row .muted { color: #555; }
+
+  .sep {
+    border: none;
+    border-top: 1px dashed #2a2a2a;
+    margin: 10px 0;
+  }
+  .sec-title {
+    color: #0ff;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 4px 0 6px;
+    opacity: 0.85;
+    text-shadow: 0 0 6px rgba(0,255,255,0.4);
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid #444;
+    color: #888;
+    margin-left: 6px;
+  }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    line-height: 1.6;
+    transition: transform 0.15s ease;
+  }
+  .badge:hover { transform: translateY(-1px); }
+  .badge.safe    { color: #6f6; border-color: #2a5; background: rgba(80,255,120,0.06); box-shadow: 0 0 6px rgba(80,255,120,0.22); }
+  .badge.risk    { color: #f55; border-color: #a33; background: rgba(255,80,80,0.08); animation: riskPulse 1.8s ease-in-out infinite; }
+  .badge.neutral { color: #777; border-color: #333; }
+
+  @keyframes riskPulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(255,80,80,0.25); }
+    50%      { box-shadow: 0 0 16px rgba(255,80,80,0.6); }
+  }
+
+  .summary {
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid;
+    opacity: 0;
+    transform: translateX(-14px);
+    animation: slideInLeft 0.45s ease 0.08s forwards;
+  }
+  @keyframes slideInLeft {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .summary.safe { color: #6f6; border-color: #2a5; background: rgba(80,255,120,0.06); box-shadow: 0 0 10px rgba(80,255,120,0.18); }
+  .summary.risk { color: #f55; border-color: #a33; background: rgba(255,80,80,0.08); animation: slideInLeft 0.45s ease 0.08s forwards, riskPulse 1.8s ease-in-out 0.45s infinite; }
+
+  .error {
+    color: #f55;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    border-left: 2px solid rgba(255,85,85,0.6);
+    padding-left: 8px;
+  }
+  .error.show {
+    display: block;
+    animation: errorIn 0.3s ease forwards, shake 0.4s ease 0.3s;
+  }
+  @keyframes errorIn { to { opacity: 1; transform: translateY(0); } }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(3px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+  }
+
+  a { color: #0ff; text-shadow: 0 0 4px rgba(0,255,255,0.4); }
+  a:hover { text-shadow: 0 0 10px rgba(0,255,255,0.8); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
 
+<canvas id="bg-canvas"></canvas>
+
 <div class="card">
   <h2>MY IP</h2>
-  <button onclick="lookup()">Check my IP</button>
+  <button onclick="lookup(event)">Check my IP</button>
   <div class="error" id="err1"></div>
   <div class="result" id="res1"></div>
 </div>
 
 <div class="card">
   <h2>LOOKUP IP / DOMAIN</h2>
-  <input id="target" placeholder="e.g. 8.8.8.8 or example.com">
-  <button onclick="lookup(true)">Look up</button>
+  <input id="target" placeholder="e.g. 8.8.8.8 or example.com" onkeydown="if(event.key==='Enter') lookup(event, true)">
+  <button onclick="lookup(event, true)">Look up</button>
   <div class="error" id="err2"></div>
   <div class="result" id="res2"></div>
 </div>
 
 <script>
+// --- background particle network (visual only, no interaction with data) ---
+(function () {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w, h, particles;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    resize();
+    const count = Math.max(24, Math.min(80, Math.floor((w * h) / 22000)));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.4 + 0.6
+    }));
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+
+    for (const p of particles) {
+      if (!reduceMotion) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = w; else if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; else if (p.y > h) p.y = 0;
+      }
+    }
+
+    const linkDist = 120;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < linkDist) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(0,255,255,${0.16 * (1 - dist / linkDist)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (const p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,255,255,0.55)';
+      ctx.shadowColor = 'rgba(0,255,255,0.8)';
+      ctx.shadowBlur = 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    if (!reduceMotion) requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', () => { init(); });
+  init();
+  frame();
+})();
+
+// --- helpers lol -----------------------------------------------------------
+
+function isIPv4(v) {
+  return /^(\d{1,3}\.){3}\d{1,3}$/.test(v);
+}
+
+function isIP(v) {
+  return isIPv4(v) || /^[0-9a-fA-F:]+:[0-9a-fA-F:]+$/.test(v);
+}
+
+
 async function resolveHost(host) {
   const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(host)}&type=A`);
   const d = await r.json();
@@ -82,32 +360,116 @@ async function resolveHost(host) {
   return a.data;
 }
 
-function isIP(v) {
-  return /^(\d{1,3}\.){3}\d{1,3}$/.test(v) || /^[0-9a-fA-F:]+:[0-9a-fA-F:]+$/.test(v);
+
+async function reverseDNS(ip) {
+  if (!isIPv4(ip)) return null;
+  try {
+    const rev = ip.split('.').reverse().join('.') + '.in-addr.arpa';
+    const r = await fetch(`https://dns.google/resolve?name=${rev}&type=PTR`);
+    const d = await r.json();
+    const a = d.Answer && d.Answer.find(x => x.type === 12);
+    return a ? a.data.replace(/\.$/, '') : null;
+  } catch {
+    return null;
+  }
 }
 
-function render(id, d) {
-  const isp = d.connection?.isp || d.connection?.org || '?';
+function badge(label, isBad, unknown = false) {
+  const cls = unknown ? 'neutral' : (isBad ? 'risk' : 'safe');
+  const mark = unknown ? '?' : (isBad ? '⚠' : '✓');
+  return `<span class="badge ${cls}">${mark} ${label}</span>`;
+}
+
+function row(label, value) {
+  return `<div class="row"><span class="label">${label}:</span> ${value}</div>`;
+}
+
+// --- rendering lol -----------------------------------------------------------
+
+function render(id, d, hostname) {
+  const c = d.connection || {};
+  const tz = d.timezone || {};
+  const cur = d.currency || {};
+  const sec = d.security || {};
+  const flag = d.flag || {};
+
   const loc = (d.latitude && d.longitude) ? `${d.latitude},${d.longitude}` : null;
-  document.getElementById(id).innerHTML = `
-    <div><span>IP:</span> ${d.ip}</div>
-    <div><span>ISP:</span> ${isp}</div>
-    <div><span>Location:</span> ${d.city || '?'}, ${d.region || '?'} - ${d.country || '?'}</div>
-    <div><span>Coords:</span> ${loc || '?'}
-      ${loc ? `<a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank">[map]</a>` : ''}
-    </div>`;
-  document.getElementById(id).style.display = 'block';
+
+  const countryLine = [d.country || '?', flag.emoji || '', d.is_eu ? '<span class="tag">EU</span>' : '']
+    .filter(Boolean).join(' ');
+
+  const anyRisk = !!(sec.vpn || sec.proxy || sec.tor || sec.hosting);
+  const hasSecurityData = Object.keys(sec).length > 0;
+
+  let summaryHtml = '';
+  if (hasSecurityData) {
+    summaryHtml = anyRisk
+      ? `<div class="summary risk">⚠ Anonymized / non-residential connection detected</div>`
+      : `<div class="summary safe">✓ No VPN, proxy, Tor, or hosting flags detected</div>`;
+  }
+
+  const html = `
+    ${summaryHtml}
+    ${row('IP', `${d.ip || '?'} <span class="tag">${d.type || '?'}</span>`)}
+    ${row('Host', hostname || '<span class="muted">no PTR record</span>')}
+
+    <hr class="sep">
+    <div class="sec-title">Network</div>
+    ${row('ISP', c.isp || c.org || '?')}
+    ${row('Org', c.org && c.org !== c.isp ? c.org : '<span class="muted">—</span>')}
+    ${row('ASN', c.asn ? 'AS' + c.asn : '?')}
+    ${row('Domain', c.domain || '<span class="muted">—</span>')}
+
+    <hr class="sep">
+    <div class="sec-title">Location</div>
+    ${row('City / Region', `${d.city || '?'}, ${d.region || '?'}`)}
+    ${row('Country', countryLine)}
+    ${row('Continent', d.continent || '?')}
+    ${row('Capital', d.capital || '?')}
+    ${row('Postal code', d.postal || '?')}
+    ${row('Calling code', d.calling_code ? '+' + d.calling_code : '?')}
+    ${row('Coords', `${loc || '?'} ${loc ? `<a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank">[map]</a>` : ''}`)}
+
+    <hr class="sep">
+    <div class="sec-title">Time &amp; Currency</div>
+    ${row('Timezone', tz.id ? `${tz.id} (${tz.abbr || '?'}, UTC${tz.utc || '?'})` : '?')}
+    ${row('Local time', tz.current_time ? new Date(tz.current_time).toLocaleString() : '?')}
+    ${row('Currency', cur.name ? `${cur.name} (${cur.code}) ${cur.symbol || ''}` : '?')}
+
+    ${hasSecurityData ? `
+    <hr class="sep">
+    <div class="sec-title">Security</div>
+    <div class="badges">
+      ${badge('VPN', sec.vpn, sec.vpn === undefined)}
+      ${badge('Proxy', sec.proxy, sec.proxy === undefined)}
+      ${badge('Tor', sec.tor, sec.tor === undefined)}
+      ${badge('Hosting/Datacenter', sec.hosting, sec.hosting === undefined)}
+      ${badge('Anonymous', sec.anonymous, sec.anonymous === undefined)}
+    </div>` : ''}
+  `;
+
+  const el = document.getElementById(id);
+  el.innerHTML = html;
+
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
 }
 
-async function lookup(withTarget = false) {
+// --- main flow lol -----------------------------------------------------------
+
+async function lookup(evt, withTarget = false) {
   const suffix = withTarget ? '2' : '1';
-  const btn = event.target;
+  const btn = evt.target;
   const err = document.getElementById('err' + suffix);
   const res = document.getElementById('res' + suffix);
+  const originalLabel = btn.dataset.label || btn.textContent;
+  btn.dataset.label = originalLabel;
 
-  err.style.display = 'none';
-  res.style.display = 'none';
+  err.classList.remove('show');
+  res.classList.remove('show');
   btn.disabled = true;
+  btn.textContent = 'Looking up...';
 
   try {
     let url = 'https://ipwho.is/';
@@ -122,12 +484,17 @@ async function lookup(withTarget = false) {
     const d = await r.json();
     if (d.success === false) throw new Error(d.message || 'Lookup failed.');
 
-    render('res' + suffix, d);
+
+    const hostname = await reverseDNS(d.ip);
+
+    render('res' + suffix, d, hostname);
   } catch (e) {
-    err.innerText = e.message;
-    err.style.display = 'block';
+    err.textContent = e.message;
+    void err.offsetWidth;
+    err.classList.add('show');
   } finally {
     btn.disabled = false;
+    btn.textContent = originalLabel;
   }
 }
 </script>
