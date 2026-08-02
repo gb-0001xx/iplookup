@@ -5,4 +5,4 @@
 
 _Direct and simple IP lookup using the ipwho.is API._
   
-> **IP Lookup** It's a simple project, an automation I use for quick public IP address lookup.
+> **IP Lookup** It's a simple project, 100% HTML, an automation i use for quick public IP address lookup.
