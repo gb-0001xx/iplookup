@@ -9,7 +9,6 @@ _Direct and simple IP lookup using the ipwho.is API._
 <br/>
 
 ![HTML5](https://img.shields.io/badge/HTML5-0D1117?style=for-the-badge&logo=html5&logoColor=white)
-![No dependencies](https://img.shields.io/badge/dependencies-none-0D1117?style=for-the-badge&logo=javascript&logoColor=white)
 ![API](https://img.shields.io/badge/API-ipwho.is-0D1117?style=for-the-badge&logo=cloudflare&logoColor=white)
 
 <br/>
