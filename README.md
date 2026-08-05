@@ -17,7 +17,7 @@ _Direct and simple IP lookup using the ipwho.is API._
 
 <br/><br/>
 
-_**IP Lookup** is a simple project, 100% HTML — an automation I use for quick public IP address lookups._
+_**IP Lookup** is a simple project — an automation I use for quick public IP address lookups._
 
 
 _**Created by Gabriel Candido Barbosa Ferreira**_
