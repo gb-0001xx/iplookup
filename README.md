@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="1200" height="260" alt="image" src="https://github.com/user-attachments/assets/0d123445-a70f-4f28-8882-a036dd2d7277" />
+  <img width="949" height="222" alt="watermark-removed-1000059316_1" src="https://github.com/user-attachments/assets/f330e680-eecc-4b8b-8d6a-0ea2bc91698e" />
 <br/><br/>
 
 # 📌 IP Lookup 🌐
